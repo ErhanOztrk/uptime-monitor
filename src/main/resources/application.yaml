@@ -1,3 +1,6 @@
 spring:
   application:
     name: uptime-monitor
+
+monitor:
+  urls: https://github.com, https://google.com, https://this-website-is-fake-123.com

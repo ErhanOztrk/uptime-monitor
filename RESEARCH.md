@@ -1,30 +1,16 @@
 # Research & Decisions Log
 
-### The Initial Approach: Over-Engineering
-When I first received this challenge, I wanted to build something highly ambitious.
-I started researching and building an "Infrastructure Drift Reconciler" using advanced
-architectural patterns (O(n) time complexity, pure functions, strict state vectors).
+### What I Needed to Learn & Why
+Since I wanted to build a small, reliable tool that I understand, I focused on three core areas:
+* **HTTP Requests in Java:** How to check if a URL is online without adding heavy external libraries.
+* **Scheduled Tasks:** How to make Spring Boot run a check automatically in the background.
+* **External Input:** How to read a list of URLs from `application.yaml` so users do not have to edit Java code to monitor new sites.
 
-### The Pivot: Choosing Ownership Over Complexity
-After a few days, I realized I was relying too heavily on complex concepts that were 
-slightly beyond my current level of expertise to fully own and defend.
-The challenge prompt stated: *"A small, well-designed project that you fully understand
-is better than a large project that you don't."*
+### Where I Looked & How I Assessed Information
+* I checked the official **Spring Boot documentation** to learn how `@Scheduled` and `@Value` work.
+* I checked the **Oracle JavaDocs** for `HttpURLConnection` to understand how connection timeouts work. I chose `HttpURLConnection` because it is built into Java and keeps the project simple.
 
-I made the engineering decision to pull the emergency brake. I pivoted to building
-this **Uptime Health Monitor**.
-
-**Why I made this decision:**
-1. **DevOps Relevance:** Monitoring uptime is a fundamental DevOps task.
-2. **Total Ownership:** By keeping the architecture simple (an MVP without a database),
-I can confidently explain every single line of code, how the HTTP connections work,
-and why I chose a `ConcurrentHashMap` for thread-safe memory storage.
-
-### Technical Learnings
-* **HTTP Connections:** I learned how to use Java's native `HttpURLConnection` 
-to make web requests and evaluate HTTP status codes without needing heavy external libraries.
-* **Spring Scheduling:** I researched how to automate background tasks in Spring Boot
-using the `@EnableScheduling` and `@Scheduled` annotations.
-* **Thread Safety:** Because the background timer is writing to the map at the same time
-the REST API might be reading from it, I learned that a standard `HashMap` could crash.
-I researched and implemented a `ConcurrentHashMap` to ensure thread safety.
+### Problems & Approaches That Didn't Work
+1. **Hardcoded URLs:** At first, I wrote the 3 URLs directly inside `MonitorService.java`. I realized this did not allow real user input, so I moved them to `application.yaml` using `@Value`.
+2. **Hanging Connections:** Initially, I only added `setConnectTimeout(3000)`. While reviewing failure modes, I realized a server could accept a connection and then freeze before replying. I added `setReadTimeout(3000)` to prevent the app from hanging.
+3. **Thread Safety:** Because the `@Scheduled` background timer writes to the map while the web controller reads from it, a normal `HashMap` is not thread-safe. I switched to `ConcurrentHashMap` so both can access it safely.

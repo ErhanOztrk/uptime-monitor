@@ -1,5 +1,6 @@
 package com.ops.monitor.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,8 @@ public class MonitorService {
 
     private final Map<String, String> statusStore = new ConcurrentHashMap<>();
 
-    private final List<String> urlsToMonitor = List.of(
-            "https://github.com",
-            "https://google.com",
-            "https://this-website-is-fake-123.com"
-    );
+    @Value("${monitor.urls}")
+    private List<String> urlsToMonitor;
 
     public MonitorService(PingService pingService) {
         this.pingService = pingService;

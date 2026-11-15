@@ -1,19 +1,16 @@
 # AI Usage Log
 
-I used AI (ChatGPT/Claude) as a technical mentor during this challenge.
+I used AI tools as a learning mentor during this challenge.
 
-**How I used it:**
-* **Brainstorming:** I used AI to help me brainstorm project ideas that would be relevant
-to a Junior DevOps role in a highly secure/banking environment.
-* **Mental Models:** When I struggled to understand how the Spring Boot components talked
-to each other, I asked the AI for real-world analogies. It gave me the
-"Drive-Thru Window" model (Controller = Cashier, Service = Cook), which perfectly
-clarified the architecture for me.
-* **Syntax Guidance:** I used AI to help me find the correct syntax 
-for `HttpURLConnection` to set a timeout, ensuring the application wouldn't hang forever
-if a website was completely unresponsive.
+### How I used AI
+* **Brainstorming:** Discussed small, practical DevOps project ideas that fit a junior/trainee scope.
+* **Mental Models:** Asked for simple analogies to understand how Spring Boot components connect (`Controller` -> `Service` -> `PingService`).
+* **Troubleshooting:** Used AI to help understand Maven/IDE setup issues and how `HttpURLConnection` timeouts work.
 
-**Verification:**
-I verified the AI's suggestions by running the code locally, intentionally 
-adding a fake/broken URL to the monitoring list to ensure the error-handling correctly
-caught the failure and reported it as "DOWN" instead of crashing the application.
+### Incorrect or Unhelpful Suggestions
+* An AI assistant initially gave me `setConnectTimeout` without `setReadTimeout`, which I added after reviewing how slow servers can hang.
+* An AI assistant also generated a complex set of extra endpoints and advanced test setups. I rejected and reverted those changes because the challenge states not to submit code I cannot fully explain, and I wanted to keep total ownership of a small, clear codebase.
+
+### How I verified suggestions
+* Ran `./mvnw test` to verify `PingServiceTest` passes.
+* Started the app locally, tested `http://localhost:8080/api/status` in Chrome, and included a fake URL (`https://this-website-is-fake-123.com`) to verify it safely reports `"DOWN"` instead of crashing.
